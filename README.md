@@ -21,13 +21,6 @@ The site uses a PostgreSQL instance (credentials in `.env`):
 - Database: `freightloading_val`
 - User: `fl_app_user`
 
-All other accounts are validated against the `users` table (seeded in `db.js`):
-
-| Username     | Password        | Role     |
-|--------------|-----------------|----------|
-| operator1    | L0ading#Ops19   | operator |
-| dispatcher   | D1spatch2026!   | operator |
-| jsmith       | Harvest!22Fl    | viewer   |
 
 ## Run locally
 
