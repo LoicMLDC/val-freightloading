@@ -34,6 +34,6 @@ The API is mocked in `server.js` (no real database connection is made).
 | Method | Path               | Description              |
 |--------|--------------------|--------------------------|
 | POST   | /api/login         | Authenticate user        |
-| GET    | /api/stats         | KPI summary              |
-| GET    | /api/shipments     | Recent shipments         |
-| GET    | /api/docks         | Loading dock status      |
+| GET    | /api/schedule      | Today's loading schedule |
+
+Dashboard: https://val-freightloading.ldc.com/dashboard

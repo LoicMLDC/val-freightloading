@@ -3,50 +3,22 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Freight Loading Dashboard - val-freightloading.ldc.com</title>
-  <link rel="stylesheet" href="styles.css">
+  <title>Logistics - Sign in</title>
+  <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
-  <section id="login-view">
-    <form id="login-form" class="card">
-      <h2>Freight Loading - VAL</h2>
+  <header><h1>Logistics</h1></header>
+
+  <main class="login">
+    <form id="login-form">
+      <h2>Sign in</h2>
       <input id="username" placeholder="Username" autocomplete="username" required>
       <input id="password" type="password" placeholder="Password" autocomplete="current-password" required>
       <button type="submit">Sign in</button>
       <p id="login-error" class="error"></p>
     </form>
-  </section>
+  </main>
 
-  <section id="dashboard-view" hidden>
-    <header>
-      <h1>Freight Loading Dashboard</h1>
-      <span>val-freightloading.ldc.com</span>
-      <button id="refresh">Refresh</button>
-    </header>
-
-    <div class="kpis">
-      <div class="card"><h3>Trucks today</h3><p id="kpi-trucks">-</p></div>
-      <div class="card"><h3>Tonnes loaded</h3><p id="kpi-tonnes">-</p></div>
-      <div class="card"><h3>On-time rate</h3><p id="kpi-ontime">-</p></div>
-      <div class="card"><h3>Active docks</h3><p id="kpi-docks">-</p></div>
-    </div>
-
-    <div class="card">
-      <h2>Loading docks</h2>
-      <div id="docks" class="docks"></div>
-    </div>
-
-    <div class="card">
-      <h2>Recent shipments</h2>
-      <table>
-        <thead>
-          <tr><th>ID</th><th>Carrier</th><th>Destination</th><th>Dock</th><th>Weight (kg)</th><th>Status</th><th>ETA</th></tr>
-        </thead>
-        <tbody id="shipments"></tbody>
-      </table>
-    </div>
-  </section>
-
-  <script src="app.js"></script>
+  <script src="/app.js"></script>
 </body>
 </html>

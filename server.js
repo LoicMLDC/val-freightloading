@@ -23,40 +23,17 @@ const dbConfig = {
   password: process.env.DB_PASSWORD,
 };
 
-const docks = ['D1', 'D2', 'D3', 'D4', 'D5', 'D6'];
-const carriers = ['TransEuro', 'NordFreight', 'BlueLine Logistics', 'RapidHaul', 'Atlas Cargo'];
-const destinations = ['Rotterdam', 'Geneva', 'Hamburg', 'Lyon', 'Antwerp', 'Milan'];
-const statuses = ['Loading', 'Queued', 'Departed', 'Delayed'];
-const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
-const rand = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
-
-function mockShipments() {
-  return Array.from({ length: 10 }, (_, i) => ({
-    id: `FL-${20260 + i}`,
-    carrier: pick(carriers),
-    destination: pick(destinations),
-    dock: pick(docks),
-    weightKg: rand(2000, 24000),
-    status: pick(statuses),
-    eta: new Date(Date.now() + rand(1, 72) * 3600e3).toISOString(),
-  }));
-}
-
-function mockStats() {
+function mockSchedule() {
   return {
-    trucksToday: rand(40, 90),
-    tonnesLoaded: rand(300, 900),
-    onTimeRate: rand(85, 99),
-    activeDocks: rand(3, docks.length),
+    terminal: 'Terminal 4',
+    gate: 'Carrier Gate Access',
+    slots: [
+      { slot: '06:00 - 07:00', carrier: 'Transco Freight', commodity: 'Soybean Meal', status: 'Scheduled' },
+      { slot: '07:00 - 08:00', carrier: 'Nordline Carriers', commodity: 'Wheat', status: 'Scheduled' },
+      { slot: '08:00 - 09:00', carrier: 'Atlas Bulk Transport', commodity: 'Corn', status: 'Pending' },
+      { slot: '09:00 - 10:00', carrier: 'Meridian Logistics', commodity: 'Sunflower Oil', status: 'Scheduled' },
+    ],
   };
-}
-
-function mockDocks() {
-  return docks.map((name) => ({
-    name,
-    status: pick(['Busy', 'Idle', 'Maintenance']),
-    utilization: rand(0, 100),
-  }));
 }
 
 function sendJson(res, code, body) {
@@ -83,11 +60,10 @@ const server = http.createServer((req, res) => {
     });
     return;
   }
-  if (url.pathname === '/api/stats') return sendJson(res, 200, mockStats());
-  if (url.pathname === '/api/shipments') return sendJson(res, 200, mockShipments());
-  if (url.pathname === '/api/docks') return sendJson(res, 200, mockDocks());
+  if (url.pathname === '/api/schedule') return sendJson(res, 200, mockSchedule());
 
-  const filePath = path.normalize(path.join(PUBLIC_DIR, url.pathname === '/' ? 'index.html' : url.pathname));
+  const routes = { '/': 'index.html', '/dashboard': 'dashboard.html' };
+  const filePath = path.normalize(path.join(PUBLIC_DIR, routes[url.pathname] || url.pathname));
   if (!filePath.startsWith(PUBLIC_DIR)) {
     res.writeHead(403);
     return res.end('Forbidden');
