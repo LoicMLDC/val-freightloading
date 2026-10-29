@@ -1,0 +1,11 @@
+{
+  "name": "val-freightloading",
+  "version": "1.0.0",
+  "description": "Freight loading dashboard - val-freightloading.ldc.com",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "license": "UNLICENSED",
+  "private": true
+}
