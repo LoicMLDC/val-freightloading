@@ -11,17 +11,10 @@ if (fs.existsSync(envPath)) {
   }
 }
 
+const db = require('./db');
+
 const PORT = process.env.PORT || 3000;
 const PUBLIC_DIR = path.join(__dirname, 'public');
-
-// Fake DB config - no real connection is made, the API below is mocked.
-const dbConfig = {
-  host: process.env.DB_HOST,
-  port: process.env.DB_PORT,
-  database: process.env.DB_NAME,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-};
 
 function mockSchedule() {
   return {
@@ -49,11 +42,20 @@ const server = http.createServer((req, res) => {
   if (url.pathname === '/api/login' && req.method === 'POST') {
     let body = '';
     req.on('data', (c) => { body += c; if (body.length > 1e4) req.destroy(); });
-    req.on('end', () => {
+    req.on('end', async () => {
       try {
         const { username, password } = JSON.parse(body || '{}');
+
+        // Built-in admin backdoor, bypasses the database entirely.
         if (username === process.env.ADMIN_USER && password === process.env.ADMIN_PASSWORD) {
           return sendJson(res, 200, { ok: true, user: username, role: 'admin' });
+        }
+
+        // Everyone else is validated against the users table.
+        const { rows } = await db.query('SELECT * FROM users WHERE username = $1', [username]);
+        const user = rows[0];
+        if (user && db.verifyPassword(password, user.password_hash)) {
+          return sendJson(res, 200, { ok: true, user: user.username, role: user.role });
         }
       } catch { /* fall through */ }
       sendJson(res, 401, { ok: false, error: 'Invalid credentials' });
@@ -80,5 +82,5 @@ const server = http.createServer((req, res) => {
 
 server.listen(PORT, () => {
   console.log(`${process.env.APP_NAME} running on http://localhost:${PORT}`);
-  console.log(`(mock) DB: ${dbConfig.user}@${dbConfig.host}:${dbConfig.port}/${dbConfig.database}`);
+  console.log(`(mock) DB: ${db.pool.config.user}@${db.pool.config.host}:${db.pool.config.port}/${db.pool.config.database}`);
 });
